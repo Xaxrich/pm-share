@@ -1645,161 +1645,11 @@
             margin-bottom: 5px
         }
         
-        /* ── Finale / 收官宣言页 ── */
-        .slide.s-finale {
-            justify-content: flex-start;
-            padding-top: 44px;
-            background: var(--bg2)
-        }
-        
-        .s-finale .dh,
-        .s-finale .df {
-            color: var(--t3)
-        }
-        
-        .fin-band {
-            margin: -44px -80px 0 -80px;
-            padding: 36px 80px 32px;
-            background: var(--grad);
-            box-shadow: var(--sh-l)
-        }
-        
-        .fin-title {
-            margin: 0 0 18px;
-            font-size: clamp(1.15rem, 2.2vw, 1.65rem);
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -.03em;
-            color: #fff;
-            max-width: 38ch
-        }
-        
-        .fin-hero {
-            display: flex;
-            flex-direction: column;
-            gap: 10px
-        }
-        
-        .fin-hero p {
-            margin: 0;
-            font-size: clamp(1.02rem, 1.85vw, 1.35rem);
-            font-weight: 800;
-            line-height: 1.35;
-            color: #fff;
-            letter-spacing: -.02em;
-            max-width: 52ch
-        }
-        
-        .fin-hero p.fin-hero-sub {
-            font-size: clamp(.88rem, 1.35vw, 1.02rem);
-            font-weight: 600;
-            color: rgba(255, 255, 255, .82);
-            line-height: 1.5
-        }
-        
-        .fin-body {
-            flex: 0 1 auto;
-            display: flex;
-            flex-direction: column;
-            padding-top: 16px
-        }
-        
-        .fin-cols {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            align-items: start;
-            align-content: start
-        }
-        
-        .fin-col {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--rl);
-            padding: 14px 16px;
-            box-shadow: var(--sh);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-self: start;
-            min-height: 0
-        }
-        
-        .fin-col-h {
-            font-size: .72rem;
-            font-weight: 800;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: var(--blue);
-            padding-bottom: 6px;
-            border-bottom: 2px solid var(--blue-l)
-        }
-        
-        .fin-col:nth-child(2) .fin-col-h {
-            color: var(--purple);
-            border-bottom-color: var(--purple-l)
-        }
-        
-        .fin-col:nth-child(3) .fin-col-h {
-            color: var(--red);
-            border-bottom-color: var(--red-l)
-        }
-        
-        .fin-col p {
-            margin: 0;
-            font-size: clamp(.76rem, 1.1vw, .86rem);
-            line-height: 1.58;
-            color: var(--t2)
-        }
-        
-        .fin-close {
-            margin-top: 14px;
-            padding: 14px 18px;
-            background: var(--t1);
-            border-radius: var(--rl)
-        }
-        
-        .fin-q {
-            margin: 0 0 10px;
-            font-size: clamp(.88rem, 1.35vw, .98rem);
-            font-weight: 700;
-            line-height: 1.55;
-            color: #fff
-        }
-        
-        .fin-hooks {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 20px
-        }
-        
-        .fin-hooks li {
-            position: relative;
-            padding-left: 12px;
-            font-size: .74rem;
-            line-height: 1.45;
-            color: rgba(226, 232, 240, .92)
-        }
-        
-        .fin-hooks li::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: .55em;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: rgba(96, 165, 250, .9)
-        }
-        
-        .fin-keys {
-            margin-top: 10px;
-            text-align: right;
-            color: var(--t3);
-            font-size: .68rem
+        /* ── 收官页（与全场白底卡片风格一致，仅收窄主列） ── */
+        .fin-wrap {
+            max-width: 1040px;
+            margin: 0 auto;
+            width: 100%
         }
     </style>
 </head>
@@ -2904,33 +2754,31 @@
             <div class="notes">这一页是整场的落地收束。讲顺序比讲模块更重要。</div>
         </section>
 
-        <section class="slide s-finale" data-title="收官">
+        <section class="slide" data-title="收官">
             <div class="dh"><span>收官</span><span class="sn"></span></div>
-            <div class="fin-band" data-anim="ari">
-                <h2 class="fin-title">最后想留住的，是一种看 AI 产品的方式</h2>
-                <div class="fin-hero">
-                    <p>大模型不会自动长成业务系统。</p>
-                    <p class="fin-hero-sub">模型侧做生成与改写，系统侧对结局、合规和客户体验负责。产品要把生成能力收进一张能追责、能核对的图里。</p>
+            <div class="bar" data-anim="afl"></div>
+            <h2 data-anim="afu">最后想留住的，是一种看 AI 产品的方式</h2>
+            <div class="fin-wrap mt-m asl">
+                <div class="insight">
+                    <p><strong>大模型不会自动长成业务系统。</strong> 模型侧做生成与改写，系统侧对结局、合规和客户体验负责。产品要把生成能力收进一张能追责、能核对的图里。</p>
                 </div>
-            </div>
-            <div class="fin-body asl">
-                <div class="fin-cols mt-m">
-                    <div class="fin-col">
-                        <div class="fin-col-h">看世界</div>
-                        <p>先把订单、阶段、对象、历史承诺这些业务事实摆清楚，再听用户具体说了什么。许多卡住的「识别」，根子在世界状态没补齐，不在模型少认了几个字。</p>
+                <div class="g3 mt-m">
+                    <div class="card cb">
+                        <h3>看世界</h3>
+                        <p class="sm mt-s">先把订单、阶段、对象、历史承诺这些业务事实摆清楚，再听用户具体说了什么。许多卡住的「识别」，根子在世界状态没补齐，不在模型少认了几个字。</p>
                     </div>
-                    <div class="fin-col">
-                        <div class="fin-col-h">定边界</div>
-                        <p>费工夫的是写清哪些交给状态与规则、哪些交给模型推断、哪些必须走工具和流程。这张图糊了，后面只会越做越乱。</p>
+                    <div class="card cp">
+                        <h3>定边界</h3>
+                        <p class="sm mt-s">费工夫的是写清哪些交给状态与规则、哪些交给模型推断、哪些必须走工具和流程。这张图糊了，后面只会越做越乱。</p>
                     </div>
-                    <div class="fin-col">
-                        <div class="fin-col-h">知道何时停</div>
-                        <p>一线返听里，更麻烦的多半是该停下来的地方没有停。成熟度的分水岭在边界与风险可核对、可复盘，话术像不像人可以往后排。</p>
+                    <div class="card cr">
+                        <h3>知道何时停</h3>
+                        <p class="sm mt-s">一线返听里，更麻烦的多半是该停下来的地方没有停。成熟度的分水岭在边界与风险可核对、可复盘，话术像不像人可以往后排。</p>
                     </div>
                 </div>
-                <div class="fin-close mt-m" data-anim="afu" style="animation-delay:.12s">
-                    <p class="fin-q">真正值得带回现场复盘的一个问题，是当前这套系统里，哪一层最常在替别的层扛结局。</p>
-                    <ul class="fin-hooks">
+                <div class="card cb mt-m">
+                    <p class="sm" style="font-weight:700;color:var(--t1);line-height:1.55;margin-bottom:8px">真正值得带回现场复盘的一个问题，是当前这套系统里，哪一层最常在替别的层扛结局。</p>
+                    <ul class="bl sm">
                         <li>业务事实是否仍在让模型猜</li>
                         <li>风险边界是否仍挂在意图优先级上</li>
                         <li>Skill 是否已经胖到在吃前置层的不确定性</li>
@@ -2939,7 +2787,7 @@
                 </div>
             </div>
             <div class="df"><span></span><span class="sn"></span></div>
-            <p class="fin-keys" style="margin:-8px 80px 0;padding-bottom:10px">← → Space 翻页 · S 演讲备注 · O 总览 · F 全屏</p>
+            <p class="sm mt-s" style="text-align:right;color:var(--t3)">← → Space 翻页 · S 演讲备注 · O 总览 · F 全屏</p>
             <div class="notes">压轴定调，不重复模块名词。散场前只留一个重判断和一组可带回会议的追问。</div>
         </section>
 
