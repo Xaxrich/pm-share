@@ -1707,10 +1707,9 @@
         }
         
         .fin-body {
-            flex: 1;
+            flex: 0 1 auto;
             display: flex;
             flex-direction: column;
-            min-height: 0;
             padding-top: 16px
         }
         
@@ -1718,8 +1717,8 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 12px;
-            flex: 1;
-            min-height: 0
+            align-items: start;
+            align-content: start
         }
         
         .fin-col {
@@ -1730,7 +1729,9 @@
             box-shadow: var(--sh);
             display: flex;
             flex-direction: column;
-            gap: 8px
+            gap: 8px;
+            align-self: start;
+            min-height: 0
         }
         
         .fin-col-h {
