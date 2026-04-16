@@ -1,0 +1,2937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI 客服 · 分享版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+         :root {
+            --bg: #fff;
+            --bg2: #f8fafc;
+            --bg3: #f1f5f9;
+            --t1: #0f172a;
+            --t2: #475569;
+            --t3: #94a3b8;
+            --border: #e2e8f0;
+            --border-s: #cbd5e1;
+            --blue: #1d4ed8;
+            --blue-l: #eff6ff;
+            --blue-d: #1e3a8a;
+            --orange: #ea580c;
+            --orange-l: #fff7ed;
+            --green: #059669;
+            --green-l: #ecfdf5;
+            --red: #dc2626;
+            --red-l: #fef2f2;
+            --purple: #7c3aed;
+            --purple-l: #f5f3ff;
+            --teal: #0891b2;
+            --amber: #d97706;
+            --amber-l: #fffbeb;
+            --grad: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+            --r: 10px;
+            --rl: 14px;
+            --sh: 0 1px 3px rgba(15, 23, 42, .06), 0 4px 16px rgba(15, 23, 42, .04);
+            --sh-l: 0 4px 24px rgba(15, 23, 42, .09), 0 16px 48px rgba(15, 23, 42, .06);
+            --f: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+            --ease: cubic-bezier(.4, 0, .2, 1);
+        }
+        
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box
+        }
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg2);
+            color: var(--t1);
+            font-family: var(--f);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+            height: 100%;
+            line-height: 1.5
+        }
+        
+        .deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg2)
+        }
+        
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 52px 80px;
+            background: var(--bg);
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            transition: opacity .38s var(--ease), transform .38s var(--ease);
+            transform: translateX(20px)
+        }
+        
+        .slide.is-active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+            z-index: 2
+        }
+        
+        .slide.is-prev {
+            transform: translateX(-20px)
+        }
+        
+        .pad-sm {
+            padding: 38px 68px
+        }
+        
+        .ey {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 8px
+        }
+        
+        h1 {
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            line-height: 1.06;
+            font-weight: 900;
+            letter-spacing: -.035em;
+            margin: 0 0 12px
+        }
+        
+        h2 {
+            font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+            line-height: 1.12;
+            font-weight: 800;
+            letter-spacing: -.028em;
+            margin: 0 0 10px
+        }
+        
+        h3 {
+            font-size: clamp(.88rem, 1.3vw, 1rem);
+            font-weight: 700;
+            margin: 0 0 5px;
+            color: var(--t1)
+        }
+        
+        p {
+            margin: 0;
+            color: var(--t2);
+            font-size: clamp(.84rem, 1.26vw, .95rem);
+            line-height: 1.6
+        }
+        
+        .lead {
+            font-size: clamp(.93rem, 1.42vw, 1.05rem);
+            line-height: 1.7;
+            color: var(--t2)
+        }
+        
+        .sm {
+            font-size: .75rem;
+            color: var(--t3)
+        }
+        
+        .w {
+            font-weight: 700;
+            color: var(--t1)
+        }
+        
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+        
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px
+        }
+        
+        .g4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 9px
+        }
+        
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch
+        }
+        
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+        
+        .mt-s {
+            margin-top: 7px
+        }
+        
+        .mt-m {
+            margin-top: 12px
+        }
+        
+        .mt-l {
+            margin-top: 20px
+        }
+        
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--rl);
+            padding: 15px 17px;
+            box-shadow: var(--sh)
+        }
+        
+        .cs {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 11px 13px
+        }
+        
+        .cb {
+            border-left: 3px solid var(--blue)
+        }
+        
+        .co {
+            border-left: 3px solid var(--orange)
+        }
+        
+        .cg {
+            border-left: 3px solid var(--green)
+        }
+        
+        .cr {
+            border-left: 3px solid var(--red)
+        }
+        
+        .cp {
+            border-left: 3px solid var(--purple)
+        }
+        
+        .bl {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+        
+        .bl li {
+            position: relative;
+            padding-left: 14px;
+            font-size: clamp(.83rem, 1.26vw, .93rem);
+            line-height: 1.55;
+            color: var(--t2)
+        }
+        
+        .bl li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .6em;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--blue)
+        }
+        
+        .bl li .w {
+            color: var(--t1)
+        }
+        
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: .66rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase
+        }
+        
+        .cb2 {
+            background: rgba(29, 78, 216, .1);
+            color: var(--blue);
+            border: 1px solid rgba(29, 78, 216, .18)
+        }
+        
+        .co2 {
+            background: rgba(234, 88, 12, .1);
+            color: var(--orange);
+            border: 1px solid rgba(234, 88, 12, .18)
+        }
+        
+        .cg2 {
+            background: rgba(5, 150, 105, .1);
+            color: var(--green);
+            border: 1px solid rgba(5, 150, 105, .18)
+        }
+        
+        .cr2 {
+            background: rgba(220, 38, 38, .1);
+            color: var(--red);
+            border: 1px solid rgba(220, 38, 38, .18)
+        }
+        
+        .cg3 {
+            background: var(--bg3);
+            color: var(--t2);
+            border: 1px solid var(--border)
+        }
+        
+        .insight {
+            border-left: 4px solid var(--blue);
+            padding: 10px 15px;
+            background: var(--blue-l);
+            border-radius: 0 var(--rl) var(--rl) 0
+        }
+        
+        .insight p {
+            font-size: clamp(.87rem, 1.36vw, .97rem);
+            font-weight: 600;
+            color: var(--blue-d);
+            line-height: 1.65
+        }
+        
+        .insight-o {
+            border-color: var(--orange);
+            background: var(--orange-l)
+        }
+        
+        .insight-o p {
+            color: var(--orange)
+        }
+        
+        .insight-r {
+            border-color: var(--red);
+            background: var(--red-l)
+        }
+        
+        .insight-r p {
+            color: var(--red)
+        }
+        
+        .insight-g {
+            border-color: var(--green);
+            background: var(--green-l)
+        }
+        
+        .insight-g p {
+            color: var(--green)
+        }
+        
+        .banner {
+            background: var(--grad);
+            border-radius: var(--rl);
+            padding: 20px 26px;
+            box-shadow: var(--sh-l)
+        }
+        
+        .banner p {
+            color: #fff;
+            font-size: clamp(.9rem, 1.4vw, 1.02rem);
+            line-height: 1.72;
+            font-weight: 500;
+            margin: 0
+        }
+        
+        .banner strong {
+            font-weight: 800;
+            color: #fff
+        }
+        
+        .bar {
+            height: 3px;
+            width: 40px;
+            background: var(--blue);
+            border-radius: 2px;
+            margin-bottom: 10px
+        }
+        
+        .dh {
+            position: absolute;
+            top: 16px;
+            left: 28px;
+            right: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 9.5px;
+            color: var(--t3);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            z-index: 10;
+            pointer-events: none
+        }
+        
+        .df {
+            position: absolute;
+            bottom: 14px;
+            left: 28px;
+            right: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 9.5px;
+            color: var(--t3);
+            z-index: 10;
+            pointer-events: none
+        }
+        
+        .sn::before {
+            content: attr(data-current)
+        }
+        
+        .sn::after {
+            content: " / " attr(data-total)
+        }
+        
+        .pb {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3px;
+            z-index: 20
+        }
+        
+        .pb>span {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--blue);
+            transition: width .3s var(--ease)
+        }
+        
+        .notes {
+            display: none!important
+        }
+        
+        .no {
+            position: fixed;
+            inset: auto 0 0;
+            max-height: 40vh;
+            background: rgba(8, 14, 32, .94);
+            color: #c8d8f0;
+            padding: 14px 32px;
+            font-size: 13px;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, .1);
+            transform: translateY(100%);
+            transition: transform .3s var(--ease);
+            z-index: 40;
+            overflow: auto
+        }
+        
+        .no.open {
+            transform: translateY(0)
+        }
+        
+        .ov {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 14, 32, .92);
+            backdrop-filter: blur(12px);
+            z-index: 50;
+            display: none;
+            padding: 28px;
+            overflow: auto
+        }
+        
+        .ov.open {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            align-content: start
+        }
+        
+        .ov .th {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            padding: 10px;
+            transition: transform .2s
+        }
+        
+        .ov .th:hover {
+            transform: scale(1.05)
+        }
+        
+        .ov .th .n {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--t3)
+        }
+        
+        .ov .th .t {
+            position: absolute;
+            bottom: 7px;
+            left: 9px;
+            right: 9px;
+            font-weight: 600;
+            color: var(--t1);
+            font-size: 9px;
+            line-height: 1.3
+        }
+        
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+        
+        @keyframes fl {
+            from {
+                opacity: 0;
+                transform: translateX(-26px)
+            }
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+        
+        @keyframes ri {
+            from {
+                opacity: 0;
+                transform: translateY(32px) scale(.97);
+                filter: blur(2px)
+            }
+            to {
+                opacity: 1;
+                transform: none;
+                filter: none
+            }
+        }
+        
+        @keyframes zp {
+            0% {
+                opacity: 0;
+                transform: scale(.76)
+            }
+            60% {
+                transform: scale(1.03)
+            }
+            100% {
+                opacity: 1;
+                transform: none
+            }
+        }
+        
+        .afu {
+            animation: fu .52s var(--ease) both
+        }
+        
+        .afl {
+            animation: fl .52s var(--ease) both
+        }
+        
+        .ari {
+            animation: ri .68s var(--ease) both
+        }
+        
+        .azp {
+            animation: zp .48s cubic-bezier(.22, 1.3, .36, 1) both
+        }
+        
+        .asl>* {
+            opacity: 0;
+            animation: ri .48s var(--ease) both
+        }
+        
+        .asl>*:nth-child(1) {
+            animation-delay: .03s
+        }
+        
+        .asl>*:nth-child(2) {
+            animation-delay: .09s
+        }
+        
+        .asl>*:nth-child(3) {
+            animation-delay: .15s
+        }
+        
+        .asl>*:nth-child(4) {
+            animation-delay: .21s
+        }
+        
+        .asl>*:nth-child(5) {
+            animation-delay: .27s
+        }
+        
+        .asl>*:nth-child(6) {
+            animation-delay: .33s
+        }
+        
+        .asl>*:nth-child(n+7) {
+            animation-delay: .39s
+        }
+        
+        @media(prefers-reduced-motion:reduce) {
+            [class*="a"] {
+                animation: none!important
+            }
+        }
+        /* ── Cover ── */
+        
+        .s-cover {
+            background: var(--grad)
+        }
+        
+        .s-cover .dh,
+        .s-cover .df {
+            color: rgba(255, 255, 255, .3)
+        }
+        
+        .s-cover h1 {
+            color: #fff
+        }
+        
+        .s-cover .lead {
+            color: rgba(255, 255, 255, .65)
+        }
+        
+        .s-cover .bar {
+            background: rgba(255, 255, 255, .4)
+        }
+        
+        .deco-a {
+            position: absolute;
+            right: -80px;
+            top: -100px;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .04)
+        }
+        
+        .deco-b {
+            position: absolute;
+            right: 60px;
+            bottom: -140px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .06)
+        }
+        
+        .pill-w {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, .14);
+            color: rgba(255, 255, 255, .9);
+            border: 1px solid rgba(255, 255, 255, .25);
+            margin-bottom: 12px
+        }
+        /* ── Section div ── */
+        
+        .s-div {
+            background: var(--bg2)
+        }
+        
+        .div-n {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 900;
+            color: var(--border-s);
+            line-height: 1;
+            letter-spacing: -.04em;
+            margin-bottom: 4px
+        }
+        
+        .div-t {
+            font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+            font-weight: 800;
+            color: var(--t1)
+        }
+        
+        .div-s {
+            font-size: .86rem;
+            color: var(--t3);
+            margin-top: 5px;
+            max-width: 56ch
+        }
+        /* ── Chat bubbles ── */
+        
+        .chat {
+            display: flex;
+            flex-direction: column;
+            gap: 9px
+        }
+        
+        .msg {
+            display: flex;
+            gap: 7px;
+            align-items: flex-end
+        }
+        
+        .msg.sys {
+            flex-direction: row-reverse
+        }
+        
+        .av {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .68rem;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+        
+        .av.u {
+            background: #dbeafe;
+            color: #1e40af
+        }
+        
+        .av.ai {
+            background: var(--blue-d);
+            color: #fff
+        }
+        
+        .bbl {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 13px;
+            font-size: .83rem;
+            line-height: 1.5
+        }
+        
+        .bbl.u {
+            background: #dbeafe;
+            border-radius: 13px 13px 4px 13px;
+            color: #1e3a8a
+        }
+        
+        .bbl.ai {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 13px 13px 13px 4px;
+            color: var(--t2)
+        }
+        
+        .bbl.bad {
+            background: rgba(220, 38, 38, .06);
+            border-color: rgba(220, 38, 38, .25);
+            color: var(--red)
+        }
+        
+        .bbl.good {
+            background: rgba(5, 150, 105, .06);
+            border-color: rgba(5, 150, 105, .25);
+            color: #065f46
+        }
+        
+        .bbl.think {
+            background: rgba(217, 119, 6, .06);
+            border-color: rgba(217, 119, 6, .25);
+            color: var(--amber);
+            font-style: italic
+        }
+        /* ── Journey ── */
+        
+        .journey {
+            display: flex;
+            align-items: stretch;
+            border-radius: var(--rl);
+            overflow: hidden;
+            border: 1px solid var(--border)
+        }
+        
+        .jst {
+            flex: 1;
+            padding: 11px 12px;
+            background: var(--bg);
+            border-right: 1px solid var(--border)
+        }
+        
+        .jst:last-child {
+            border-right: none
+        }
+        
+        .jst .jn {
+            font-size: .63rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--t3);
+            margin-bottom: 2px
+        }
+        
+        .jst .jtit {
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 4px
+        }
+        
+        .jst .jbod {
+            font-size: .72rem;
+            color: var(--t2);
+            line-height: 1.4
+        }
+        
+        .jst.a {
+            background: rgba(29, 78, 216, .05);
+            border-bottom: 3px solid var(--blue)
+        }
+        
+        .jst.r {
+            background: rgba(234, 88, 12, .05);
+            border-bottom: 3px solid var(--orange)
+        }
+        
+        .jst.c {
+            background: rgba(220, 38, 38, .05);
+            border-bottom: 3px solid var(--red)
+        }
+        /* ── Architecture comparison ── */
+        
+        .arch-compare {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 14px;
+            align-items: center
+        }
+        
+        .arch-box {
+            border-radius: var(--rl);
+            padding: 14px 16px;
+            border: 1px solid var(--border)
+        }
+        
+        .arch-old {
+            background: var(--bg2)
+        }
+        
+        .arch-new {
+            background: var(--blue-l);
+            border-color: rgba(29, 78, 216, .2)
+        }
+        
+        .arch-arrow {
+            font-size: 1.3rem;
+            color: var(--t3);
+            text-align: center
+        }
+        
+        .arch-layer {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+        
+        .al {
+            border-radius: var(--r);
+            padding: 7px 12px;
+            font-size: .75rem;
+            font-weight: 600;
+            line-height: 1.3
+        }
+        
+        .al-1 {
+            background: rgba(29, 78, 216, .1);
+            color: var(--blue-d)
+        }
+        
+        .al-2 {
+            background: rgba(124, 58, 237, .1);
+            color: var(--purple)
+        }
+        
+        .al-3 {
+            background: rgba(5, 150, 105, .1);
+            color: #065f46
+        }
+        
+        .al-4 {
+            background: rgba(220, 38, 38, .1);
+            color: var(--red)
+        }
+        
+        .al-5 {
+            background: rgba(234, 88, 12, .1);
+            color: var(--orange)
+        }
+        
+        .al-big {
+            background: rgba(220, 38, 38, .12);
+            color: var(--red);
+            border: 1px dashed rgba(220, 38, 38, .3);
+            text-align: center;
+            padding: 16px;
+            border-radius: var(--r)
+        }
+        /* ── PM work ── */
+        
+        .pm-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px
+        }
+        
+        .pm-no {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--rl);
+            padding: 14px 16px
+        }
+        
+        .pm-yes {
+            background: var(--blue-l);
+            border: 1px solid rgba(29, 78, 216, .2);
+            border-radius: var(--rl);
+            padding: 14px 16px
+        }
+        
+        .pm-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: .8rem;
+            margin-bottom: 5px
+        }
+        
+        .pm-no .pm-item {
+            background: rgba(220, 38, 38, .05);
+            color: var(--t2)
+        }
+        
+        .pm-yes .pm-item {
+            background: rgba(29, 78, 216, .06);
+            color: var(--blue-d)
+        }
+        
+        .pm-item .ico {
+            flex-shrink: 0;
+            font-size: .9rem
+        }
+        
+        .pm-output {
+            margin-top: 10px
+        }
+        
+        .out-tag {
+            display: inline-flex;
+            align-items: center;
+            margin: 2px 2px;
+            padding: 4px 10px;
+            background: rgba(29, 78, 216, .1);
+            color: var(--blue-d);
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 600;
+            border: 1px solid rgba(29, 78, 216, .18)
+        }
+        /* ── Five-piece ── */
+        
+        .jigsaw {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px
+        }
+        
+        .jp {
+            border-radius: var(--r);
+            padding: 11px 11px;
+            border: 2px solid transparent
+        }
+        
+        .jp1 {
+            background: rgba(29, 78, 216, .07);
+            border-color: rgba(29, 78, 216, .22)
+        }
+        
+        .jp2 {
+            background: rgba(124, 58, 237, .07);
+            border-color: rgba(124, 58, 237, .22)
+        }
+        
+        .jp3 {
+            background: rgba(5, 150, 105, .07);
+            border-color: rgba(5, 150, 105, .22)
+        }
+        
+        .jp4 {
+            background: rgba(8, 145, 178, .07);
+            border-color: rgba(8, 145, 178, .22)
+        }
+        
+        .jp5 {
+            background: rgba(220, 38, 38, .07);
+            border-color: rgba(220, 38, 38, .22)
+        }
+        
+        .jp .jlabel {
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 4px
+        }
+        
+        .jp1 .jlabel {
+            color: var(--blue)
+        }
+        
+        .jp2 .jlabel {
+            color: var(--purple)
+        }
+        
+        .jp3 .jlabel {
+            color: var(--green)
+        }
+        
+        .jp4 .jlabel {
+            color: var(--teal)
+        }
+        
+        .jp5 .jlabel {
+            color: var(--red)
+        }
+        
+        .jp ul {
+            list-style: none;
+            padding: 0;
+            margin: 0
+        }
+        
+        .jp ul li {
+            font-size: .71rem;
+            color: var(--t2);
+            line-height: 1.45
+        }
+        
+        .jp .jdesc {
+            font-size: .67rem;
+            color: var(--t3);
+            margin-top: 4px;
+            line-height: 1.35
+        }
+        /* ── Pipeline ── */
+        
+        .pipe {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+        
+        .pr {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+        
+        .ps {
+            flex: 1;
+            border-radius: var(--r);
+            padding: 8px 13px;
+            font-size: .76rem;
+            font-weight: 600;
+            line-height: 1.3
+        }
+        
+        .ps1 {
+            background: rgba(29, 78, 216, .07);
+            border: 1px solid rgba(29, 78, 216, .2);
+            color: var(--blue-d)
+        }
+        
+        .ps2 {
+            background: rgba(124, 58, 237, .07);
+            border: 1px solid rgba(124, 58, 237, .2);
+            color: var(--purple)
+        }
+        
+        .ps3 {
+            background: rgba(5, 150, 105, .07);
+            border: 1px solid rgba(5, 150, 105, .2);
+            color: #065f46
+        }
+        
+        .ps4 {
+            background: rgba(8, 145, 178, .07);
+            border: 1px solid rgba(8, 145, 178, .2);
+            color: #0e4f5c
+        }
+        
+        .ps5 {
+            background: rgba(220, 38, 38, .07);
+            border: 1px solid rgba(220, 38, 38, .2);
+            color: var(--red)
+        }
+        
+        .ps6 {
+            background: rgba(234, 88, 12, .07);
+            border: 1px solid rgba(234, 88, 12, .2);
+            color: var(--orange)
+        }
+        
+        .ps-out {
+            background: var(--blue-d);
+            color: #fff;
+            border: 1px solid transparent;
+            text-align: center
+        }
+        
+        .pn {
+            font-size: .66rem;
+            color: var(--t3);
+            width: 96px;
+            flex-shrink: 0;
+            text-align: right;
+            line-height: 1.3
+        }
+        /* ── E2E trace ── */
+        
+        .trace {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+        
+        .tr-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px
+        }
+        
+        .tr-layer {
+            width: 90px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: .68rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3
+        }
+        
+        .tr-content {
+            flex: 1;
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            font-size: .78rem;
+            color: var(--t2);
+            line-height: 1.45
+        }
+        
+        .tr-content .highlight {
+            color: var(--t1);
+            font-weight: 700
+        }
+        
+        .tr-connector {
+            width: 90px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--t3);
+            font-size: .8rem
+        }
+        /* ── Bad cases ── */
+        
+        .bad-cases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px
+        }
+        
+        .bc {
+            border-radius: var(--rl);
+            overflow: hidden;
+            border: 1px solid var(--border)
+        }
+        
+        .bc-head {
+            padding: 12px 14px;
+            background: var(--red-l);
+            border-bottom: 1px solid rgba(220, 38, 38, .15)
+        }
+        
+        .bc-head .bc-num {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 3px
+        }
+        
+        .bc-head h3 {
+            font-size: .86rem;
+            color: var(--red);
+            margin: 0
+        }
+        
+        .bc-body {
+            padding: 12px 14px;
+            background: var(--bg)
+        }
+        
+        .bc-what {
+            font-size: .78rem;
+            color: var(--t2);
+            line-height: 1.5;
+            margin-bottom: 8px
+        }
+        
+        .bc-lesson {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            padding: 7px 10px;
+            background: var(--green-l);
+            border-radius: 8px;
+            border: 1px solid rgba(5, 150, 105, .15)
+        }
+        
+        .bc-lesson .bl-icon {
+            font-size: .85rem;
+            flex-shrink: 0
+        }
+        
+        .bc-lesson p {
+            font-size: .76rem;
+            color: #065f46;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0
+        }
+        /* ── Collab tensions ── */
+        
+        .tension {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+        
+        .tv {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 8px;
+            align-items: center
+        }
+        
+        .tv-them {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 9px 12px;
+            font-size: .78rem
+        }
+        
+        .tv-pm {
+            background: var(--blue-l);
+            border: 1px solid rgba(29, 78, 216, .2);
+            border-radius: var(--r);
+            padding: 9px 12px;
+            font-size: .78rem;
+            color: var(--blue-d)
+        }
+        
+        .tv-arrow {
+            text-align: center;
+            font-size: .9rem;
+            color: var(--blue);
+            font-weight: 700;
+            flex-shrink: 0
+        }
+        
+        .tv-who {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 3px
+        }
+        
+        .tv-who.alg {
+            color: var(--purple)
+        }
+        
+        .tv-who.eng {
+            color: var(--orange)
+        }
+        
+        .tv-who.team {
+            color: var(--teal)
+        }
+        
+        .tv-who.pm {
+            color: var(--blue)
+        }
+        /* ── Three rounds ── */
+        
+        .rounds {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px
+        }
+        
+        .rnd {
+            border-radius: var(--rl);
+            padding: 16px;
+            position: relative;
+            overflow: hidden
+        }
+        
+        .r1 {
+            background: linear-gradient(135deg, #1e3a8a, #1d4ed8)
+        }
+        
+        .r2 {
+            background: linear-gradient(135deg, #0c4a6e, #0369a1)
+        }
+        
+        .r3 {
+            background: linear-gradient(135deg, #14532d, #059669)
+        }
+        
+        .rnd .rnum {
+            position: absolute;
+            right: 12px;
+            top: -2px;
+            font-size: 3rem;
+            font-weight: 900;
+            opacity: .12;
+            line-height: 1
+        }
+        
+        .rnd .rlbl {
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .6);
+            margin-bottom: 5px;
+            display: block
+        }
+        
+        .rnd h3 {
+            color: #fff;
+            font-size: .9rem;
+            margin-bottom: 7px
+        }
+        
+        .rnd .rdesc {
+            font-size: .74rem;
+            color: rgba(255, 255, 255, .7);
+            line-height: 1.5
+        }
+        
+        .rnd .rpass {
+            margin-top: 9px;
+            font-size: .69rem;
+            background: rgba(255, 255, 255, .14);
+            border-radius: 6px;
+            padding: 5px 9px;
+            color: rgba(255, 255, 255, .85)
+        }
+        /* ── TOC slide ── */
+        
+        .toc-v {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 700px
+        }
+        
+        .toc-vi {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 11px 15px;
+            border-radius: var(--rl);
+            border: 1px solid var(--border);
+            background: var(--bg2)
+        }
+        
+        .tvi-n {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--blue);
+            line-height: 1;
+            flex-shrink: 0;
+            width: 22px;
+            padding-top: 2px
+        }
+        
+        .tvi-body h4 {
+            font-size: .86rem;
+            font-weight: 700;
+            color: var(--t1);
+            margin: 0 0 2px
+        }
+        
+        .tvi-body p {
+            font-size: .72rem;
+            color: var(--t3);
+            margin: 0
+        }
+        
+        .toc-note {
+            font-size: .76rem;
+            color: var(--t3);
+            margin-top: 14px
+        }
+        /* ── Section dividers ── */
+        
+        .sdiv-wrap {
+            display: grid;
+            grid-template-columns: 170px 1fr;
+            gap: 40px;
+            align-items: center
+        }
+        
+        .sdiv-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start
+        }
+        
+        .sdiv-num {
+            font-size: clamp(5.5rem, 10vw, 8rem);
+            font-weight: 900;
+            line-height: .85;
+            letter-spacing: -.05em;
+            color: transparent;
+            -webkit-text-stroke: 2px var(--border-s)
+        }
+        
+        .sdiv-num.cur {
+            -webkit-text-stroke: none;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text
+        }
+        
+        .sdiv-label {
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--t3);
+            margin-top: 10px
+        }
+        
+        .sdiv-prog {
+            display: flex;
+            gap: 5px;
+            margin-top: 18px;
+            align-items: center
+        }
+        
+        .sdiv-dot {
+            height: 3px;
+            border-radius: 2px;
+            background: var(--border)
+        }
+        
+        .sdiv-dot.on {
+            background: var(--blue);
+            width: 32px
+        }
+        
+        .sdiv-dot.off {
+            width: 20px
+        }
+        
+        .sdiv-dot.done {
+            background: var(--blue-d);
+            opacity: .35;
+            width: 20px
+        }
+        
+        .sdiv-right {}
+        
+        .sdiv-right h2 {
+            font-size: clamp(1.5rem, 2.7vw, 2.1rem);
+            font-weight: 800;
+            color: var(--t1);
+            margin: 0 0 6px;
+            letter-spacing: -.028em
+        }
+        
+        .sdiv-subtitle {
+            font-size: clamp(.93rem, 1.4vw, 1.05rem);
+            color: var(--t2);
+            line-height: 1.6;
+            margin-bottom: 14px
+        }
+        
+        .sdiv-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+        
+        .sdiv-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .84rem;
+            color: var(--t2);
+            padding: 7px 12px;
+            border-radius: 8px;
+            background: var(--bg2);
+            border: 1px solid var(--border)
+        }
+        
+        .sdiv-item .si-n {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--blue);
+            flex-shrink: 0;
+            width: 16px
+        }
+        /* ── Toc ── */
+        
+        .toc {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+        
+        .toc-i {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 12px 14px;
+            border-radius: var(--rl);
+            background: var(--bg2);
+            border: 1px solid var(--border)
+        }
+        
+        .toc-n {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--blue);
+            line-height: 1;
+            flex-shrink: 0;
+            width: 22px
+        }
+        
+        .toc-b h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--t1);
+            margin: 0 0 2px
+        }
+        
+        .toc-b p {
+            font-size: .72rem;
+            color: var(--t3);
+            margin: 0
+        }
+        
+        .stage-table {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1.2fr 1.2fr;
+            gap: 8px
+        }
+        
+        .stage-head {
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--t3);
+            padding: 0 4px
+        }
+        
+        .stage-cell {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: var(--bg)
+        }
+        
+        .stage-cell strong {
+            display: block;
+            font-size: .8rem;
+            color: var(--t1);
+            margin-bottom: 4px
+        }
+        
+        .quote-big {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            font-weight: 700;
+            color: var(--t1)
+        }
+        
+        .logic-flow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px
+        }
+        
+        .logic-box {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            background: var(--bg)
+        }
+        
+        .logic-box .k {
+            font-size: .66rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--t3);
+            margin-bottom: 4px
+        }
+        
+        .logic-box .v {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 4px
+        }
+        
+        .matrix3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px
+        }
+        
+        .mini-title {
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 5px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="deck">
+
+        <section class="slide s-cover" data-title="封面">
+            <div class="dh"><span>AI 客服 · 方法与实践</span><span>2026</span></div>
+            <div class="deco-a"></div>
+            <div class="deco-b"></div>
+            <div>
+                <h1 data-anim="ari">C端AI客服<br/>到底难在哪<br/></h1>
+                <p class="lead mt-m" data-anim="afu" style="animation-delay:.18s;max-width:56ch">一套系统怎么从能聊走到能判断、能处理、知道什么时候该停。</p>
+            </div>
+            <div class="df"><span></span><span class="sn" data-current="1" data-total="22"></span></div>
+            <div class="notes">开场定调：重点不是模型秀肌肉，而是一套可落地的业务判断系统如何被定义出来。</div>
+        </section>
+
+        <section class="slide" data-title="目录">
+            <div class="dh"><span>全场结构</span><span class="sn"></span></div>
+            <div class="bar" data-anim="afl"></div>
+            <h2 data-anim="afu">今日分享的五点</h2>
+            <div class="toc-v mt-m asl">
+                <div class="toc-vi">
+                    <div class="tvi-n">1</div>
+                    <div class="tvi-body">
+                        <h4>这件事为什么难</h4>
+                        <p>三方角色、业务目标、订单阶段，以及为什么一句话会在不同阶段变成不同问题。</p>
+                    </div>
+                </div>
+                <div class="toc-vi">
+                    <div class="tvi-n">2</div>
+                    <div class="tvi-body">
+                        <h4>意图识别到底该怎么定义</h4>
+                        <p>这句话处在什么阶段、后面该推进什么动作、处理错的代价有多大。</p>
+                    </div>
+                </div>
+                <div class="toc-vi">
+                    <div class="tvi-n">3</div>
+                    <div class="tvi-body">
+                        <h4>为什么不同渠道一定要分开设计</h4>
+                        <p>IM、企微、400 不是三个输入框，它们对应的是三种系统责任。</p>
+                    </div>
+                </div>
+                <div class="toc-vi">
+                    <div class="tvi-n">4</div>
+                    <div class="tvi-body">
+                        <h4>skills 到底怎么落地</h4>
+                        <p>为什么系统会从决策树和大 prompt 走向 skills；skill 应该怎么拆、怎么管、怎么评估。</p>
+                    </div>
+                </div>
+                <div class="toc-vi">
+                    <div class="tvi-n">5</div>
+                    <div class="tvi-body">
+                        <h4>AI PM 的不可替代价值到底在哪</h4>
+                        <p>与算法如何分工协作、产品侧应守住哪些定义权，以及如何按现实节奏把系统推进落地。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">目录按「五个问题」推进；点明贯穿案例，便于全场形成一条主线。</div>
+        </section>
+
+        <section class="slide" style="background:var(--bg2)" data-title="第1章">
+            <div class="dh"><span>章节导览</span><span class="sn"></span></div>
+            <div class="sdiv-wrap">
+                <div class="sdiv-left">
+                    <div class="sdiv-num cur">1</div>
+                    <div class="sdiv-label">Business Reality</div>
+                    <div class="sdiv-prog">
+                        <div class="sdiv-dot on"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                    </div>
+                </div>
+                <div class="sdiv-right">
+                    <h2>业务现实</h2>
+                    <p class="sdiv-subtitle">先把体感建立起来，这很重要</p>
+                    <div class="sdiv-items">
+                        <div class="sdiv-item"><span class="si-n">A</span>谁在这套系统里和谁发生关系</div>
+                        <div class="sdiv-item"><span class="si-n">B</span>系统到底在为哪些业务结果负责</div>
+                        <div class="sdiv-item"><span class="si-n">C</span>订单生命周期为什么决定了一句话的意义</div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">第一章目标：帮在座各位建立统一的业务语境，后文才站得住。</div>
+        </section>
+
+        <section class="slide" data-title="一个真实的错误处理">
+            <div class="dh"><span>1 · 业务背景</span><span class="sn"></span></div>
+            <div class="bar" data-anim="afl"></div>
+            <h2 data-anim="afu">先看一个真实发生的错误</h2>
+            <div class="g2 mt-m">
+                <div class="card asl">
+                    <h3>场景：保洁师傅迟到了</h3>
+                    <div class="chat mt-s">
+                        <div class="msg">
+                            <div class="av u">用</div>
+                            <div class="bbl u">「怎么还没来，都超了半小时了」</div>
+                        </div>
+                        <div class="msg sys">
+                            <div class="av ai">AI</div>
+                            <div class="bbl think">系统识别：服务人员进度查询 ✓（语义正确）</div>
+                        </div>
+                        <div class="msg sys">
+                            <div class="av ai">AI</div>
+                            <div class="bbl bad">「您好，您的订单师傅正在赶往您的位置，通常会按预约时间上门，请耐心等待……」</div>
+                        </div>
+                        <div class="msg">
+                            <div class="av u">用</div>
+                            <div class="bbl u">「我已经等了半小时了你给我说耐心等待！？」</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stack asl" style="animation-delay:.12s">
+                    <div class="card cb">
+                        <h3>发生了什么</h3>
+                        <ul class="bl sm mt-s">
+                            <li><span class="w">语义上</span>：识别「服务人员进度查询」没有错</li>
+                            <li><span class="w">业务上</span>：当前已超预约 30 分钟，这是迟到风险，绝不能按普通查询回复</li>
+                            <li>系统把「已超预约」这个<span class="w">业务事实</span>完全忽视了</li>
+                        </ul>
+                    </div>
+                    <div class="insight-r insight">
+                        <p>这不是「AI 聊天质量」问题，这是<strong>业务控制</strong>问题。语义分类准确，业务动作是错的。</p>
+                    </div>
+                    <div class="cs card" style="font-size:.8rem;color:var(--t2)"><span class="w">这就是为什么</span>最难的地方不在 NLP，而在于：知道什么时候自动化已经不能继续了。</div>
+                </div>
+            </div>
+            <div class="notes">开场共鸣：语义对了，业务动作错了——后面所有「路由 / 分层 / skills」都从这里长出来。</div>
+        </section>
+
+        <section class="slide" data-title="三方角色与业务目标">
+            <div class="dh"><span>1 · 业务背景</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>先别急着讲模型，先看这套系统在替谁做判断</h2>
+            <div class="g2 mt-m">
+                <div class="card asl">
+                    <h3>三方角色</h3>
+                    <div class="g3 mt-s">
+                        <div class="cs">
+                            <div class="mini-title">用户</div>
+                            <p>要的是快、准、少废话。最怕重复解释、最怕一直被安抚、最怕问题没往前走。</p>
+                        </div>
+                        <div class="cs">
+                            <div class="mini-title">服务方</div>
+                            <p>门店 / 阿姨 / 师傅要的是少打扰、少误伤、少被平台乱升级。</p>
+                        </div>
+                        <div class="cs">
+                            <div class="mini-title">平台</div>
+                            <p>要的是自动化承接更多、少无效转人工、少投诉、还能保住履约结果。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stack asl" style="animation-delay:.12s">
+                    <div class="card cb">
+                        <h3>业务目标</h3>
+                        <ul class="bl sm mt-s">
+                            <li>效率：能查的自己查到，能闭环的别堆给人工</li>
+                            <li>体验：少让用户重复说，少让用户觉得在绕圈</li>
+                            <li>结果：别把问题解释漂亮了，结果还是没处理</li>
+                        </ul>
+                    </div>
+                    <div class="insight">
+                        <p>所以这套系统从第一天起就不是“回答系统”，它更像一个处在交易链路里的控制层。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">这里要讲得像在上班：谁在乎什么、谁怕什么，不是抽象概念。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="业务阶段与典型问题">
+            <div class="dh"><span>1 · 业务背景</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>同一句话为什么会越做越难：因为它放进不同阶段，后面动作完全不同</h2>
+            <div class="stage-table mt-m asl">
+                <div class="stage-head">阶段</div>
+                <div class="stage-head">用户常说什么</div>
+                <div class="stage-head">系统真正要做什么</div>
+                <div class="stage-head">最容易犯的错</div>
+                <div class="stage-cell"><strong>售前</strong>还来得及吗？这个能不能做？</div>
+                <div class="stage-cell">服务范围、时效、价格、怎么选服务</div>
+                <div class="stage-cell">推动转化，但别乱承诺</div>
+                <div class="stage-cell">把边界问题说满，后面履约炸掉</div>
+
+                <div class="stage-cell"><strong>待履约</strong>师傅什么时候来？</div>
+                <div class="stage-cell">订单进度、服务人员信息、预约状态</div>
+                <div class="stage-cell">把状态透明化，让用户知道现在到哪一步了</div>
+                <div class="stage-cell">明明是状态问题，却一直输出知识说明</div>
+
+                <div class="stage-cell"><strong>临近履约</strong>怎么还没来？</div>
+                <div class="stage-cell">催单、联系失败、迟到、爽约前兆</div>
+                <div class="stage-cell">先看风险，再决定还能不能自动化</div>
+                <div class="stage-cell">还按普通查询处理，把风险放大</div>
+
+                <div class="stage-cell"><strong>服务中</strong>这做得不对吧</div>
+                <div class="stage-cell">质量异常、态度问题、加价、物损</div>
+                <div class="stage-cell">分诊，判断责任和升级边界</div>
+                <div class="stage-cell">把争议问题当普通问答处理</div>
+
+                <div class="stage-cell"><strong>售后</strong>怎么还没到账？</div>
+                <div class="stage-cell">退款、工单、返工、赔付、投诉进度</div>
+                <div class="stage-cell">告诉用户现在卡在哪、下一步怎么走</div>
+                <div class="stage-cell">讲了一堆道理，但问题一点没往前走</div>
+            </div>
+            <div class="insight mt-m">
+                <p>后文会看到，意图识别、渠道策略、skills 设计，最终仍要回到这张表上来对齐。</p>
+            </div>
+            <div class="notes">这一页很重要：业务阶段不是报告目录，而是系统理解问题的上位语境。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="同一句话，五种含义">
+            <div class="dh"><span>1 · 业务背景</span><span class="sn"></span></div>
+            <div class="bar" data-anim="afl"></div>
+            <h2 data-anim="afu">「怎么还没来」——同一句话，在不同阶段是完全不同的问题</h2>
+            <p class="lead" data-anim="afu" style="animation-delay:.06s">决定系统怎么处理的，不是句子本身，而是<span class="w">句子所在的业务阶段</span>。</p>
+            <div class="journey mt-m asl">
+                <div class="jst">
+                    <div class="jn">售前</div>
+                    <div class="jtit">时效咨询</div>
+                    <div class="jbod">用户问「今天还有档期吗」→ 查服务时效，不查订单</div>
+                </div>
+                <div class="jst a">
+                    <div class="jn">待履约</div>
+                    <div class="jtit">普通查进度</div>
+                    <div class="jbod">「师傅大概几点到？」→ 查订单状态，普通回复即可</div>
+                </div>
+                <div class="jst r">
+                    <div class="jn">临近履约 ⚠</div>
+                    <div class="jtit">迟到风险</div>
+                    <div class="jbod">已超预约时间 → 不能普通回复，应催单 / 升级 / 给方案</div>
+                </div>
+                <div class="jst c">
+                    <div class="jn">服务中 ⚡</div>
+                    <div class="jtit">履约异常</div>
+                    <div class="jbod">出发了却没到？→ 立刻介入，不能再安抚</div>
+                </div>
+                <div class="jst">
+                    <div class="jn">售后</div>
+                    <div class="jtit">承诺未兑现</div>
+                    <div class="jbod">「上次说好的返工为什么没人来」→ 查返工单，是历史问题</div>
+                </div>
+            </div>
+            <div class="g2 mt-l asl">
+                <div class="insight">
+                    <p>意图识别不能只看「句子说了什么」——必须先知道<strong>现在处在哪个阶段、已经发生了什么</strong>。</p>
+                </div>
+                <div class="cs card" style="font-size:.82rem"><span class="w">本地生活最难的点之一：</span>同一套系统要跑售前 / 待履约 / 服务中 / 售后，同一句话的含义和后续动作可以完全不同。</div>
+            </div>
+            <div class="notes">旅程条与上一页表格互补：一列讲清「路由为什么必须先看阶段」。</div>
+        </section>
+
+        <section class="slide" data-title="AI 客服是业务控制层">
+            <div class="dh"><span>1 · 业务背景</span><span class="sn"></span></div>
+            <div class="bar" data-anim="afl"></div>
+            <h2 data-anim="afu">这不是「聊天机器人」，这是一套「业务控制层」</h2>
+            <p class="lead" data-anim="afu" style="animation-delay:.06s">它要控制的不只是「说话质量」，而是下面四件事（外加：知道何时该退出自动化）。</p>
+            <div class="g4 mt-m asl" style="gap:8px">
+                <div class="card" style="text-align:center;padding:16px 10px">
+                    <div style="font-size:1.45rem;margin-bottom:6px">📍</div>
+                    <div style="font-weight:800;font-size:.84rem;color:var(--blue);margin-bottom:4px">控阶段</div>
+                    <p style="font-size:.74rem">当前在订单旅程的哪一步？决定后面所有动作的边界</p>
+                </div>
+                <div class="card" style="text-align:center;padding:16px 10px">
+                    <div style="font-size:1.45rem;margin-bottom:6px">🎯</div>
+                    <div style="font-weight:800;font-size:.84rem;color:var(--blue);margin-bottom:4px">控动作</div>
+                    <p style="font-size:.74rem">用户在推动查状态、要执行，还是已经要升级？</p>
+                </div>
+                <div class="card" style="text-align:center;padding:16px 10px">
+                    <div style="font-size:1.45rem;margin-bottom:6px">🔍</div>
+                    <div style="font-weight:800;font-size:.84rem;color:var(--blue);margin-bottom:4px">控对象</div>
+                    <p style="font-size:.74rem">在说哪一单、哪一笔退款？先锁定对象，别一上来要订单号</p>
+                </div>
+                <div class="card" style="text-align:center;padding:16px 10px">
+                    <div style="font-size:1.45rem;margin-bottom:6px">🛑</div>
+                    <div style="font-weight:800;font-size:.84rem;color:var(--red);margin-bottom:4px">控风险与退出</div>
+                    <p style="font-size:.74rem">超预约、重复不满、物损……何时必须停自动化、转升级</p>
+                </div>
+            </div>
+            <div class="insight mt-l" data-anim="afu" style="animation-delay:.25s">
+                <p>AI 客服的核心从来不是「会不会说」，而是「能不能在该负责时负责，在不该自动处理时停下来」——这是 <strong>AI PM</strong> 和做普通聊天机器人 PM 最本质的差别。</p>
+            </div>
+            <div class="notes">把「控制层」讲成可记忆的四个抓手，后文 risk gate / 对象层可与之对照。</div>
+        </section>
+
+        <section class="slide" style="background:var(--bg2)" data-title="第2章">
+            <div class="dh"><span>章节导览</span><span class="sn"></span></div>
+            <div class="sdiv-wrap">
+                <div class="sdiv-left">
+                    <div class="sdiv-num cur">2</div>
+                    <div class="sdiv-label">Intent Routing</div>
+                    <div class="sdiv-prog">
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot on"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                    </div>
+                </div>
+                <div class="sdiv-right">
+                    <h2>意图识别这件事，真正该怎么定义</h2>
+                    <p class="sdiv-subtitle">这一节集中讲一件事：为什么在实践中，越来越不宜把它看成单纯的分类问题。</p>
+                    <div class="sdiv-items">
+                        <div class="sdiv-item"><span class="si-n">A</span>旧做法为什么会越来越重</div>
+                        <div class="sdiv-item"><span class="si-n">B</span>一句输入到底要先回答哪三个问题</div>
+                        <div class="sdiv-item"><span class="si-n">C</span>当前最稳的技术落点是什么</div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">第二章要把“意图=路由”讲透。</div>
+        </section>
+
+        <section class="slide" data-title="旧系统为什么会越来越重">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>一开始大家都会把它理解成分类问题，做着做着就会越来越重</h2>
+            <div class="g2 mt-m">
+                <div class="card cr asl">
+                    <h3>旧思路</h3>
+                    <div class="quote-big mt-s">一句话进来 → 分到一个标签 → 去场景回复</div>
+                    <ul class="bl sm mt-m">
+                        <li>短期看很顺，尤其在高频场景里</li>
+                        <li>但越往后越会把阶段、对象、风险、流程状态全塞进“意图识别”里</li>
+                        <li>分类器越来越像一个替系统背锅的大黑盒</li>
+                    </ul>
+                </div>
+                <div class="stack asl" style="animation-delay:.1s">
+                    <div class="card cg">
+                        <h3>问题出在哪</h3>
+                        <p style="font-size:.82rem;margin-top:6px">真正难的不是给句子找名字，而是系统得先知道：</p>
+                        <ul class="bl sm mt-s">
+                            <li>这句话落在订单生命周期的哪一段</li>
+                            <li>这句话后面系统要推什么动作</li>
+                            <li>这一把如果走错，代价到底大不大</li>
+                        </ul>
+                    </div>
+                    <div class="insight-o insight">
+                        <p>所以意图识别做到后面，一定会从“分类题”变成“路由题”。这不是理论升级，是被业务逼出来的升级。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">这里不要讲得太学术。重点是“为什么旧系统越做越重”。</div>
+        </section>
+
+        <section class="slide" data-title="一句输入先回答哪三个问题">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>因此更值得先问三个问题，而不是先问“这是什么标签”</h2>
+            <div class="logic-flow mt-m asl">
+                <div class="logic-box">
+                    <div class="k">Question 1</div>
+                    <div class="v">它出现在订单生命周期的哪个阶段？</div>
+                    <p class="sm">因为阶段一变，同一句话后面允许的动作空间就变了。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Question 2</div>
+                    <div class="v">这句话后面最主要要推进什么动作？</div>
+                    <p class="sm">查状态、问规则、求执行、求升级，先把大方向定住。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Question 3</div>
+                    <div class="v">这把如果处理错了，业务风险有多大？</div>
+                    <p class="sm">风险高的时候，系统不该硬猜，更不该继续普通自动化。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Then</div>
+                    <div class="v">再去收细主题</div>
+                    <p class="sm">到这一步再谈订单进度、退款进度、返工、物损，系统会稳很多。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Result</div>
+                    <div class="v">意图识别开始像路由，不再像贴标签</div>
+                    <p class="sm">到这里，系统才算从“会分”走向“会处理”。</p>
+                </div>
+            </div>
+            <div class="notes">本节对「意图识别如何定义」的核心表达；讲清即可，不必堆术语。</div>
+        </section>
+
+        <section class="slide" data-title="分类、层级和技术落点">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>落到系统里，通常拆成三层，再配三种技术</h2>
+            <div class="g3 mt-m asl">
+                <div class="card cb">
+                    <h3>第一层：生命周期</h3>
+                    <p class="sm mt-s">售前 / 待履约 / 临近履约 / 服务中 / 售后</p>
+                    <ul class="bl sm mt-s">
+                        <li>优先靠世界状态判断</li>
+                        <li>状态不全时再让小模型兜底</li>
+                    </ul>
+                </div>
+                <div class="card cg">
+                    <h3>第二层：动作层</h3>
+                    <p class="sm mt-s">查状态 / 问规则 / 求执行 / 求升级 / 投诉风险</p>
+                    <ul class="bl sm mt-s">
+                        <li>小模型主判，讲究稳定、低时延、可校准</li>
+                        <li>这一层是整个系统的粗路由骨架</li>
+                    </ul>
+                </div>
+                <div class="card co">
+                    <h3>第三层：细主题</h3>
+                    <p class="sm mt-s">订单进度 / 服务人员信息 / 退款进度 / 返工 / 物损等</p>
+                    <ul class="bl sm mt-s">
+                        <li>按阶段拆空间，不做一个总分类器</li>
+                        <li>低置信度、边界类再交给 LLM 复判</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>也因此不必过度纠结“到底选哪一个模型”。先把层次理顺，模型选择反而会变简单。</p>
+            </div>
+            <div class="notes">这页把“分类/技术方案/业务定义”三块合在一起，不要再拆太散。</div>
+        </section>
+
+        <section class="slide" data-title="旧架构稳定但到顶">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>不要把太多判断压在了一个地方</h2>
+            <div class="arch-compare mt-m" data-anim="ari">
+                <div class="arch-box arch-old">
+                    <p class="sm" style="margin-bottom:8px;font-weight:700;color:var(--t2)">常见现状</p>
+                    <div class="arch-layer">
+                        <div class="al" style="background:var(--bg3);border:1px solid var(--border);color:var(--t2);font-size:.74rem">用户输入</div>
+                        <div style="text-align:center;font-size:.78rem;color:var(--t3)">↓ 一次吃完</div>
+                        <div class="al al-big" style="padding:16px;font-size:.78rem">
+                            <div style="font-weight:800;font-size:.86rem;margin-bottom:4px">大意图识别器</div>
+                            <div style="font-size:.7rem;opacity:.85">同时在猜：阶段？动作？对象？风险？是否转人工？……</div>
+                        </div>
+                        <div style="text-align:center;font-size:.78rem;color:var(--t3)">↓</div>
+                        <div class="al" style="background:rgba(234,88,12,.08);border:1px solid rgba(234,88,12,.2);color:var(--orange);font-size:.74rem">Skill（越来越胖，什么都做）</div>
+                    </div>
+                    <p style="font-size:.72rem;color:var(--green);margin-top:8px">✓ 流程清楚、规则强时很稳</p>
+                    <p style="font-size:.72rem;color:var(--red);margin-top:4px">✗ 不确定性全压在一个分类器里，出事不知道是哪层的锅</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box arch-new">
+                    <p class="sm" style="margin-bottom:8px;font-weight:700;color:var(--blue)">目标方向</p>
+                    <div class="arch-layer">
+                        <div class="al al-1" style="font-size:.72rem">状态层：先把业务事实拼好</div>
+                        <div class="al al-2" style="font-size:.72rem">语义层：生命周期 + 动作 + 主题 + 流程状态 + 风险（分开）</div>
+                        <div class="al al-3" style="font-size:.72rem">控制层：对象解析 · Query 归一 · 风险门控</div>
+                        <div class="al al-5" style="font-size:.72rem">执行层：Skill 只做执行，OOS 驱动演化</div>
+                    </div>
+                    <p style="font-size:.72rem;color:var(--blue);margin-top:8px">每层解决一种不确定性，可定位、可维护</p>
+                </div>
+            </div>
+            <div class="insight-o insight mt-m">
+                <p>换一个更强的模型解决不了这个问题——中间层太薄，什么都压给模型猜。</p>
+            </div>
+            <div class="notes">与上一页「三层三技术」衔接：这是组织方式上的对照，不是否定当下工程。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="五块语义拼图">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>把「一个大标签表」拆成「五块语义坐标系」</h2>
+            <p class="lead mt-s">用户诉求、流程状态、风险信号混在一个平面里竞争——是结构性问题，不是单点模型问题。</p>
+            <div class="jigsaw mt-m asl">
+                <div class="jp jp1">
+                    <div class="jlabel">生命周期</div>
+                    <ul>
+                        <li>售前 / 待履约 / 临近履约 / 服务中 / 售后</li>
+                    </ul>
+                    <div class="jdesc">定义业务语境；同一句话放不同阶段，动作空间完全不同。</div>
+                </div>
+                <div class="jp jp2">
+                    <div class="jlabel">动作层</div>
+                    <ul>
+                        <li>查状态 · 问规则 · 求执行 · 求升级 · 投诉风险</li>
+                    </ul>
+                    <div class="jdesc">系统下一步走哪条链路，比细主题更优先。</div>
+                </div>
+                <div class="jp jp3">
+                    <div class="jlabel">问题主题</div>
+                    <ul>
+                        <li>订单进度 · 服务人员 · 退款 · 返工 · 物损等</li>
+                    </ul>
+                    <div class="jdesc">挂在阶段 + 动作下才有意义。</div>
+                </div>
+                <div class="jp jp4">
+                    <div class="jlabel">流程状态</div>
+                    <ul>
+                        <li>等用户确认 · 等选候选订单 · 等同意建诉</li>
+                    </ul>
+                    <div class="jdesc">系统推进到哪一步；不是用户意图，应独立管理。</div>
+                </div>
+                <div class="jp jp5">
+                    <div class="jlabel">风险信号</div>
+                    <ul>
+                        <li>超预约 / 联系失败 · 重复不满 · 安抚后再升级</li>
+                    </ul>
+                    <div class="jdesc">表达自动化边界；不要混进主题标签里打补丁。</div>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>这五块是<strong>语义坐标系</strong>，不是一张扁平标签表——和算法讨论「为什么分类器越来越乱」时，这是最硬的共同语言。</p>
+            </div>
+            <div class="notes">强调流程状态与风险信号不要混进主题意图。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="Progressive Narrowing">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>Progressive Narrowing：每一步减少走错路的概率</h2>
+            <div class="g2 mt-m">
+                <div class="pipe asl">
+                    <div class="pr">
+                        <div class="ps ps1">① 先读业务事实<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">有没有订单？超预约？有无工单？</span></div>
+                        <div class="pn">业务系统<br/>不靠猜</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps2">② 生命周期<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">当前业务阶段</span></div>
+                        <div class="pn">状态优先<br/>文本兜底</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps2" style="background:rgba(124,58,237,.06)">③ 动作方向<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">查状态？求执行？求升级？</span></div>
+                        <div class="pn">小模型主判<br/>限定候选</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps3">④ 归一化输入<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">口语 / 省略 / 指代</span></div>
+                        <div class="pn">规则 +<br/>受控 LLM</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps4">⑤ 锁定对象<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">自动匹配 → 候选确认 → 最后才问号</span></div>
+                        <div class="pn">三段式<br/>对象解析</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps5">⑥ 风险门控<span style="font-size:.65rem;font-weight:400;display:block;opacity:.75">还能继续自动化吗？</span></div>
+                        <div class="pn">独立刹车<br/>可叫停</div>
+                    </div>
+                    <div class="pr">
+                        <div class="ps ps-out">→ Skill / 工具 / 转人工</div>
+                        <div class="pn">前置已收窄</div>
+                    </div>
+                </div>
+                <div class="stack asl" style="animation-delay:.15s">
+                    <div class="card cb">
+                        <h3>分层在干什么</h3>
+                        <ul class="bl sm mt-s">
+                            <li>①②：把事实从「模型猜」变成「系统知道」</li>
+                            <li>③：高频稳定的小模型粗路由</li>
+                            <li>④⑤：缺信息与指代消解</li>
+                            <li>⑥：风险不交给模型「感觉一下」</li>
+                            <li>Skill：此时才做执行与话术组合</li>
+                        </ul>
+                    </div>
+                    <div class="insight-g insight">
+                        <p>每层解决一种不确定性，每层知道边界、知道什么时候把球交给下一层。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">总骨架页：后面 channels / skills 都是在这根管道上各管一段。</div>
+        </section>
+
+        <section class="slide" data-title="四层总架构">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>从「大意图识别器」到「分层控制系统」</h2>
+            <div class="g2 mt-m asl">
+                <div class="arch-layer" style="gap:7px">
+                    <div class="al al-1" style="padding:12px 14px">
+                        <div style="font-weight:800;font-size:.86rem;margin-bottom:3px">① 状态层</div>
+                        <div style="font-size:.72rem;opacity:.88">订单事实 / 履约 / 售后 / 会话历史 / 风险提示</div>
+                        <div style="font-size:.68rem;margin-top:4px;opacity:.7">业务系统 + 规则</div>
+                    </div>
+                    <div class="al al-2" style="padding:12px 14px">
+                        <div style="font-weight:800;font-size:.86rem;margin-bottom:3px">② 语义层</div>
+                        <div style="font-size:.72rem;opacity:.88">五块拼图：生命周期 × 动作 × 主题 × 流程状态 × 风险</div>
+                        <div style="font-size:.68rem;margin-top:4px;opacity:.7">小模型主判，LLM 兜边界</div>
+                    </div>
+                    <div class="al al-3" style="padding:12px 14px">
+                        <div style="font-weight:800;font-size:.86rem;margin-bottom:3px">③ 控制层</div>
+                        <div style="font-size:.72rem;opacity:.88">Query 归一 · 对象解析 · 风险门控</div>
+                        <div style="font-size:.68rem;margin-top:4px;opacity:.7">规则 + 受控 LLM</div>
+                    </div>
+                    <div class="al al-5" style="padding:12px 14px">
+                        <div style="font-weight:800;font-size:.86rem;margin-bottom:3px">④ 执行与学习层</div>
+                        <div style="font-size:.72rem;opacity:.88">Skill / Tool / Policy / Eval · OOS 驱动演化</div>
+                        <div style="font-size:.68rem;margin-top:4px;opacity:.7">前置收窄后，Skill 不当总大脑</div>
+                    </div>
+                </div>
+                <div class="stack">
+                    <div class="card">
+                        <h3>为什么要分四层</h3>
+                        <ul class="bl sm mt-s">
+                            <li>先搞清楚<span class="w">世界是什么样</span></li>
+                            <li>再分开<span class="w">五种性质的东西</span>各负其责</li>
+                            <li>缺信息 / 不确定 / 高风险<span class="w">各有机制</span></li>
+                            <li>最后 Skill 才能把闭环跑稳</li>
+                        </ul>
+                    </div>
+                    <div class="insight mt-s">
+                        <p>每层出问题知道是哪层的锅——可维护；而不是大 Prompt + 优先级谁也说不清。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">中枢页：进入渠道章前，先建立全场总图。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="贯穿案例：同一句话走完整条链">
+            <div class="dh"><span>2 · 意图识别</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>「怎么还没来，都超了半小时了」——跑完整条链</h2>
+            <div class="trace mt-m asl">
+                <div class="tr-row">
+                    <div class="tr-layer al-1">① 状态层</div>
+                    <div class="tr-content">读业务事实：<span class="highlight">有订单 · 预约 14:00 · 当前 14:32 · 超时 32 分钟 · 已分配未上门</span></div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-2">② 生命周期</div>
+                    <div class="tr-content">判定：<span class="highlight">临近履约（已超时）</span> ← 时间对比，不靠文本猜</div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-2">③ 动作层</div>
+                    <div class="tr-content">用户推动方向 → <span class="highlight">求执行 / 求升级</span>，不是普通「查状态」</div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-3">④ 控制层<br/>归一</div>
+                    <div class="tr-content">归一为：<span class="highlight">询问上门进度 + 已表达超时不满</span> ← 风险信号不丢</div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-3">⑤ 对象</div>
+                    <div class="tr-content">自动锁定：<span class="highlight">今日唯一活跃订单</span> ← 不必先要订单号</div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-4">⑥ 风险门控</div>
+                    <div class="tr-content"><span class="highlight" style="color:var(--red)">STOP 自动化</span> → 允许：催单 / 建单 / 转人工；禁止：继续「请耐心等待」式安抚</div>
+                </div>
+                <div class="tr-row">
+                    <div class="tr-layer al-5">⑦ 执行层</div>
+                    <div class="tr-content">触发催单升级 Skill：<span class="highlight">承认超时 + 已联系门店 + 15 分钟内反馈</span></div>
+                </div>
+            </div>
+            <div class="notes">把抽象层钉在一个 case 上；讲时可对照开场错误页。</div>
+        </section>
+
+        <section class="slide" style="background:var(--bg2)" data-title="第3章">
+            <div class="dh"><span>章节导览</span><span class="sn"></span></div>
+            <div class="sdiv-wrap">
+                <div class="sdiv-left">
+                    <div class="sdiv-num cur">3</div>
+                    <div class="sdiv-label">Channel Strategy</div>
+                    <div class="sdiv-prog">
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot on"></div>
+                        <div class="sdiv-dot off"></div>
+                        <div class="sdiv-dot off"></div>
+                    </div>
+                </div>
+                <div class="sdiv-right">
+                    <h2>不同渠道，为什么一定要分开设计</h2>
+                    <p class="sdiv-subtitle">这个地方最容易被做浅。不是 IM 是文字、400 是语音这么简单，真正不同的是系统责任。</p>
+                    <div class="sdiv-items">
+                        <div class="sdiv-item"><span class="si-n">A</span>输入质量不同</div>
+                        <div class="sdiv-item"><span class="si-n">B</span>用户对时延和追问的容忍度不同</div>
+                        <div class="sdiv-item"><span class="si-n">C</span>每个渠道想优化的结果也不一样</div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">第三章重点不是技术适配，而是系统责任差异。</div>
+        </section>
+
+        <section class="slide" data-title="为什么渠道策略不能共用">
+            <div class="dh"><span>3 · 渠道策略</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>同一套意图体系可以共用，但识别策略不能照搬</h2>
+            <div class="g3 mt-m asl">
+                <div class="card">
+                    <span class="chip cb2">输入质量</span>
+                    <p class="mt-s">IM 文本更完整，企微上下文更连续，400 还有 ASR 噪声。系统面对的不是同一种原材料。</p>
+                </div>
+                <div class="card">
+                    <span class="chip co2">时延容忍</span>
+                    <p class="mt-s">IM 可以多轮澄清，企微可以持续推进，400 场景通常容不得系统连问多轮。</p>
+                </div>
+                <div class="card">
+                    <span class="chip cg2">系统目标</span>
+                    <p class="mt-s">IM 更适合自动化承接，企微更适合推进处理，400 更适合风险分流。</p>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>所以这里不是“一个模型上三个渠道”，而是“一个语义骨架，三套控制策略”。</p>
+            </div>
+            <div class="notes">这页是总判断。下一页再把 IM / 企微 / 400 展开。</div>
+        </section>
+
+        <section class="slide" data-title="IM、企微、400 三种系统责任">
+            <div class="dh"><span>3 · 渠道策略</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>三种渠道可以这样理解：不是三个入口，是三种系统责任</h2>
+            <div class="g3 mt-m asl">
+                <div class="card cb">
+                    <h3>IM</h3>
+                    <p class="sm">自动化承接主战场</p>
+                    <ul class="bl sm mt-s">
+                        <li>允许细一点，允许问清楚，允许多走一步 skill</li>
+                        <li>重点是把用户问题尽量导进可执行链路</li>
+                    </ul>
+                </div>
+                <div class="card cg">
+                    <h3>企微</h3>
+                    <p class="sm">状态推进主战场</p>
+                    <ul class="bl sm mt-s">
+                        <li>用户很多时候不是来提新问题，是来追上次那件事</li>
+                        <li>重点是识别当前推进到哪一步、接下来怎么往前推</li>
+                    </ul>
+                </div>
+                <div class="card co">
+                    <h3>400</h3>
+                    <p class="sm">风险分流主战场</p>
+                    <ul class="bl sm mt-s">
+                        <li>第一优先级不是分得多细，是别把高风险问题继续压在自动化里</li>
+                        <li>这里宁可保守一点，也别硬撑</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="notes">这一页收束：不同渠道策略不同的底层原因。</div>
+        </section>
+
+        <section class="slide" data-title="三种渠道的失败模式">
+            <div class="dh"><span>3 · 渠道策略</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>三个渠道的「失败」长得不一样——所以策略不能抄</h2>
+            <div class="g3 mt-m asl">
+                <div class="card cb">
+                    <span class="chip cb2">IM</span>
+                    <p class="sm mt-s" style="font-weight:700;color:var(--blue)">PM 设计重点：自动化路由尽量深</p>
+                    <div class="insight mt-s" style="padding:8px 11px">
+                        <p style="font-size:.74rem">失败 ≈ 该自动闭环的没吃到，问题白白堆给人工</p>
+                    </div>
+                </div>
+                <div class="card cg">
+                    <span class="chip cg2">企微</span>
+                    <p class="sm mt-s" style="font-weight:700;color:var(--green)">PM 设计重点：会话状态机 + 推进行为</p>
+                    <div class="insight-g insight mt-s" style="padding:8px 11px">
+                        <p style="font-size:.74rem">失败 ≈ 推进节奏断掉，用户反复从头描述</p>
+                    </div>
+                </div>
+                <div class="card co">
+                    <span class="chip co2">400</span>
+                    <p class="sm mt-s" style="font-weight:700;color:var(--orange)">PM 设计重点：风险分流，宁可保守</p>
+                    <div class="insight-o insight mt-s" style="padding:8px 11px">
+                        <p style="font-size:.74rem">失败 ≈ 该退出自动化时没退出，矛盾被激化</p>
+                    </div>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>同一套语义骨架可以共用，但<strong>识别策略、澄清轮次、升级门槛</strong>要按渠道单独调——否则是在用 IM 的成功标准去坑 400。</p>
+            </div>
+            <div class="notes">从「责任」落到「各自怎么失败」，渠道章更有记忆点。</div>
+        </section>
+
+        <section class="slide" style="background:var(--bg2)" data-title="第4章">
+            <div class="dh"><span>章节导览</span><span class="sn"></span></div>
+            <div class="sdiv-wrap">
+                <div class="sdiv-left">
+                    <div class="sdiv-num cur">4</div>
+                    <div class="sdiv-label">Skills in Practice</div>
+                    <div class="sdiv-prog">
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot on"></div>
+                        <div class="sdiv-dot off"></div>
+                    </div>
+                </div>
+                <div class="sdiv-right">
+                    <h2>skills 真正该怎么落地</h2>
+                    <p class="sdiv-subtitle">这一章不把 skills 讲成一个新名词，而聚焦两件事：它为何在此阶段成为自然结果，以及最容易做错在哪。</p>
+                    <div class="sdiv-items">
+                        <div class="sdiv-item"><span class="si-n">A</span>为什么系统会从决策树和大 prompt 走向 skills</div>
+                        <div class="sdiv-item"><span class="si-n">B</span>openClaw 这一套机制到底在干什么</div>
+                        <div class="sdiv-item"><span class="si-n">C</span>一个真实 skill 怎么跑，以及最容易踩哪些坑</div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">第四章衔接落地中的 skills 实践。</div>
+        </section>
+
+        <section class="slide" data-title="为什么会走向 skills">
+            <div class="dh"><span>4 · skills 落地</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>为什么系统最后会从决策树和大 prompt 走向 skills</h2>
+            <div class="g2 mt-m">
+                <div class="card cr asl">
+                    <h3>旧做法做到后面会遇到什么</h3>
+                    <ul class="bl sm mt-s">
+                        <li>规则越来越多，状态越来越多，prompt 越来越长</li>
+                        <li>经验散在不同人脑子里，新人接手很慢</li>
+                        <li>线上出问题时，很难说清到底是识别错、路由错还是执行错</li>
+                    </ul>
+                </div>
+                <div class="stack asl" style="animation-delay:.12s">
+                    <div class="card cg">
+                        <h3>skills 带来的变化</h3>
+                        <ul class="bl sm mt-s">
+                            <li>经验开始被固化成能力模块</li>
+                            <li>系统不再把所有逻辑都压给总 prompt</li>
+                            <li>每个模块终于可以讲清职责边界：负责什么、不负责什么</li>
+                        </ul>
+                    </div>
+                    <div class="insight">
+                        <p>所以 skills 真正带来的不是“更高级”，而是“系统终于能把经验模块化、边界化、可评估化”。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">这一页要讲得很实。skills 不是为了追新，是因为旧做法已经承载不住复杂性。</div>
+        </section>
+
+        <section class="slide" data-title="openClaw 下的 skill 机制">
+            <div class="dh"><span>4 · skills 落地</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>结合业务里在用的 openClaw 底座，skill 其实是在做这四件事</h2>
+            <div class="logic-flow mt-m asl">
+                <div class="logic-box">
+                    <div class="k">Step 1</div>
+                    <div class="v">扫描</div>
+                    <p class="sm">扫描内置和项目目录下的 SKILL.md，把能力清单先暴露出来。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Step 2</div>
+                    <div class="v">识别</div>
+                    <p class="sm">根据 name / description / title 等元信息，判断哪些 skill 值得进一步读。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Step 3</div>
+                    <div class="v">读取</div>
+                    <p class="sm">运行时再去读具体 skill 文档，而不是一开始把所有经验都塞进上下文。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Step 4</div>
+                    <div class="v">执行</div>
+                    <p class="sm">基于 skill 文档里的约束和步骤，走 reAct + tools，把事办掉。</p>
+                </div>
+                <div class="logic-box">
+                    <div class="k">Value</div>
+                    <div class="v">渐进式披露</div>
+                    <p class="sm">上下文更省，经验更模块化，系统也更容易维护。</p>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>因此更合理的判断是：skills 不是“prompt 换壳”。其真正价值，在于把经验的暴露方式从“一次性全塞进上下文”改成“按需读取”。</p>
+            </div>
+            <div class="notes">与项目中的 lbgClaw / openClaw 机制对齐即可，不必展开底层代码。</div>
+        </section>
+
+        <section class="slide" data-title="skill 的标准组成与真实示例">
+            <div class="dh"><span>4 · skills 落地</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>一个成熟的 skill，至少要把这几件事写清楚</h2>
+            <div class="g2 mt-m">
+                <div class="card asl">
+                    <h3>标准组成</h3>
+                    <ul class="bl sm mt-s">
+                        <li>name：这个能力到底叫什么</li>
+                        <li>description：什么场景应该触发它</li>
+                        <li>title：和旧系统、旧场景怎么映射</li>
+                        <li>执行步骤：先做什么，再做什么，失败了怎么办</li>
+                        <li>输入契约：需要什么对象、缺了怎么补</li>
+                        <li>输出契约：回复、push、转人工、建单分别怎么处理</li>
+                    </ul>
+                </div>
+                <div class="stack asl" style="animation-delay:.12s">
+                    <div class="card cg">
+                        <h3>拿订单查询 skill 举例</h3>
+                        <ul class="bl sm mt-s">
+                            <li>先看有没有订单对象</li>
+                            <li>没有就走对象解析：自动补、候选确认、最后再追问</li>
+                            <li>有对象就查订单详情</li>
+                            <li>根据当前时间、履约状态和用户关注点决定回复还是升级</li>
+                        </ul>
+                    </div>
+                    <div class="insight">
+                        <p>可以看到：好的 skill 不该从零猜问题，而应接住已被前置层收窄过的问题，再把它闭环掉。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">这里用真实 skill 例子最有说服力。讲“订单查询 skill”比讲抽象 skill 更有效。</div>
+        </section>
+
+        <section class="slide" data-title="skills 最容易做错的地方">
+            <div class="dh"><span>4 · skills 落地</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>skills 最容易踩的坑，建议在团队里重点盯这四个</h2>
+            <div class="g4 mt-m asl">
+                <div class="card cr">
+                    <h3>误触发</h3>
+                    <p class="sm mt-s">description 写得太泛，或者前置层没收窄好，skill 被错误问题触发。</p>
+                </div>
+                <div class="card co">
+                    <h3>边界冲突</h3>
+                    <p class="sm mt-s">两个 skill 都觉得自己能接，最后靠 prompt 抢触发，系统会越来越乱。</p>
+                </div>
+                <div class="card cb">
+                    <h3>职责混装</h3>
+                    <p class="sm mt-s">skill 里面又做意图判断、又做对象层、又做风控，最后重新长成一个大黑盒。</p>
+                </div>
+                <div class="card cg">
+                    <h3>只做不评</h3>
+                    <p class="sm mt-s">不知道它误触发率多少、fallback 多少、执行成功率多少，skill 就会失控。</p>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>所以从单个 skill 走到完整能力体系，最后一定要有四样东西一起协同：tool、skill、policy、eval。</p>
+            </div>
+            <div class="notes">这一页就是 skills 章节的收束页：不是只会写 skill，还要知道 skill 会怎么坏。</div>
+        </section>
+
+        <section class="slide pad-sm" data-title="三个真实 Bad Case">
+            <div class="dh"><span>贯穿 · 真实教训</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>三个「差一点就这么做」的坑</h2>
+            <p class="lead">分别对应：<span class="w">状态 / 对象 / 风险门控</span>——和前面管道、trace 一一可对上。</p>
+            <div class="bad-cases mt-m asl">
+                <div class="bc">
+                    <div class="bc-head">
+                        <div class="bc-num">Bad Case 01</div>
+                        <h3>语义对了，业务动作错了</h3>
+                    </div>
+                    <div class="bc-body">
+                        <div class="bc-what">「怎么还没来」识别成服务人员进度查询——语义准；但已超预约 30 分钟仍回复「请耐心等待」→ 用户崩溃升级。</div>
+                        <div class="bc-lesson"><span class="bl-icon">💡</span>
+                            <p>评价维度应是<strong>业务动作对不对</strong>，不是只看分类 F1。超预约是事实，不是语义难题。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bc">
+                    <div class="bc-head">
+                        <div class="bc-num">Bad Case 02</div>
+                        <h3>对象拿错了，Skill 白跑</h3>
+                    </div>
+                    <div class="bc-body">
+                        <div class="bc-what">用户问今天保洁进度，系统从文本抽到 ID 碎片却关联到昨天已完成订单——回复「正确」但完全答非所问。</div>
+                        <div class="bc-lesson"><span class="bl-icon">💡</span>
+                            <p>拿错对象比缺字段更危险；对象解析必须是<strong>系统级统一能力</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bc">
+                    <div class="bc-head">
+                        <div class="bc-num">Bad Case 03</div>
+                        <h3>没有刹车，系统不该继续却继续</h3>
+                    </div>
+                    <div class="bc-body">
+                        <div class="bc-what">连续三次不满仍「安抚 + 自动回复」，第三次后用户威胁投诉——若有 risk gate，第二次就应停自动化转升级。</div>
+                        <div class="bc-lesson"><span class="bl-icon">💡</span>
+                            <p>优先级解决排序，解决不了「何时必须停」；<strong>风险门控要独立成层</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">可与 trace、开场对话对照讲，收束第 2～4 章的共同主线。</div>
+        </section>
+
+        <section class="slide" style="background:var(--bg2)" data-title="第5章">
+            <div class="dh"><span>章节导览</span><span class="sn"></span></div>
+            <div class="sdiv-wrap">
+                <div class="sdiv-left">
+                    <div class="sdiv-num cur">5</div>
+                    <div class="sdiv-label">PM Value</div>
+                    <div class="sdiv-prog">
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot done"></div>
+                        <div class="sdiv-dot on"></div>
+                    </div>
+                </div>
+                <div class="sdiv-right">
+                    <h2>最后讲最现实的一件事</h2>
+                    <p class="sdiv-subtitle">系统讲完了，最后一定会回到一个问题：这件事里，AI PM 的不可替代价值到底在哪。</p>
+                    <div class="sdiv-items">
+                        <div class="sdiv-item"><span class="si-n">A</span>不必替代算法在其强项上的工作</div>
+                        <div class="sdiv-item"><span class="si-n">B</span>把问题定义、标签体系、评估口径与业务结果的主导权落在产品侧</div>
+                        <div class="sdiv-item"><span class="si-n">C</span>建设节奏落在可交付里程碑上，避免停在大蓝图</div>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">最后一章宜真诚、可落地，避免空泛总结。</div>
+        </section>
+
+        <section class="slide" data-title="AI PM 到底在做什么">
+            <div class="dh"><span>5 · PM 价值</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>不是调模型，是定系统的边界和结构</h2>
+            <div class="pm-split mt-m asl">
+                <div class="pm-no">
+                    <p class="sm" style="font-weight:700;color:var(--red);margin-bottom:8px">容易误解成在做的事</p>
+                    <div class="pm-item"><span class="ico">🤖</span>只追「最强模型」</div>
+                    <div class="pm-item"><span class="ico">📝</span>把 Prompt 写得更长更全</div>
+                    <div class="pm-item"><span class="ico">🎯</span>单靠抬意图分类 F1 救系统</div>
+                    <div class="pm-item"><span class="ico">📊</span>只盯「AI 解决率」一个数</div>
+                </div>
+                <div class="pm-yes">
+                    <p class="sm" style="font-weight:700;color:var(--blue);margin-bottom:8px">更值得投入的事</p>
+                    <div class="pm-item"><span class="ico">🗺</span>系统应该知道哪些业务事实（世界状态）</div>
+                    <div class="pm-item"><span class="ico">📐</span>原生诉求 vs 流程状态 vs 风险信号的语义坐标系</div>
+                    <div class="pm-item"><span class="ico">🛤</span>生命周期骨架 + 动作路由骨架</div>
+                    <div class="pm-item"><span class="ico">⚖️</span>何时可继续自动化、何时必须停</div>
+                    <div class="pm-item"><span class="ico">📋</span>每个 Skill 的执行契约与评估口径</div>
+                    <div class="pm-output">
+                        <p style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:5px">典型产出物：</p>
+                        <span class="out-tag">Taxonomy 主表</span><span class="out-tag">Boundary Book</span><span class="out-tag">Risk Ontology</span>
+                        <span class="out-tag">Object Policy</span><span class="out-tag">Skill 契约</span><span class="out-tag">Eval 口径</span>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">上班感：外行也能一眼看到 AI PM 的交付物长什么样。</div>
+        </section>
+
+        <section class="slide" data-title="PM 不可替代价值">
+            <div class="dh"><span>5 · PM 价值</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>一个越来越清晰的判断：AI PM 更该建立主导权的领域，不在模型结构里</h2>
+            <div class="g2 mt-m">
+                <div class="card asl">
+                    <h3>不必与算法在这些环节角力</h3>
+                    <ul class="bl sm mt-s">
+                        <li>具体模型结构怎么搭</li>
+                        <li>训练细节怎么调</li>
+                        <li>参数怎么设更优</li>
+                        <li>某个单点 benchmark 谁高谁低</li>
+                    </ul>
+                    <p class="sm mt-m">这些环节算法侧天然更强；即便压过一头，对业务收益也有限。</p>
+                </div>
+                <div class="card cg asl" style="animation-delay:.12s">
+                    <h3>更值得建立主导权的是这些</h3>
+                    <ul class="bl sm mt-s">
+                        <li>问题到底怎么定义</li>
+                        <li>taxonomy 到底怎么分层</li>
+                        <li>系统看什么指标才算真的有效</li>
+                        <li>自动化边界画在哪里</li>
+                        <li>最后到底对什么业务结果负责</li>
+                    </ul>
+                    <p class="sm mt-m">这些东西不先定义清楚，算法优化越努力，系统可能越偏。</p>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>因此更务实的结论是：AI PM 最值钱之处，不在替算法想模型，而在为系统把“什么叫对、什么叫该停、什么叫真的解决”界定清楚。</p>
+            </div>
+            <div class="notes">这一页宜结合亲历案例，增强可信度。</div>
+        </section>
+
+        <section class="slide" data-title="PM 与算法工程怎么协作">
+            <div class="dh"><span>5 · PM 价值</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>现实里最常见的几类摩擦，实务里往往这样对齐</h2>
+            <div class="tension mt-m asl">
+                <div class="tv">
+                    <div class="tv-them">
+                        <div class="tv-who alg">算法</div>“我们先把分类器做准，后面自然会好很多。”</div>
+                    <div class="tv-arrow">→</div>
+                    <div class="tv-pm">
+                        <div class="tv-who pm">PM</div>“先别急。taxonomy 还没拆清，分类器越准，可能只是在一个混乱体系上提分。”</div>
+                </div>
+                <div class="tv">
+                    <div class="tv-them">
+                        <div class="tv-who eng">工程</div>“我先把几个 skill 接起来，把链路跑通。”</div>
+                    <div class="tv-arrow">→</div>
+                    <div class="tv-pm">
+                        <div class="tv-who pm">PM</div>“先把对象层和 risk gate 立住。不然 skill 会越来越胖，后面全得重来。”</div>
+                </div>
+                <div class="tv">
+                    <div class="tv-them">
+                        <div class="tv-who team">业务</div>“AI 解决率能不能再提一提？”</div>
+                    <div class="tv-arrow">→</div>
+                    <div class="tv-pm">
+                        <div class="tv-who pm">PM</div>“先把‘什么叫真的解决’定义清楚。不转人工不建单，不等于用户问题已经被解决了。”</div>
+                </div>
+            </div>
+            <div class="notes">这页突出「上班感」：贴近一线协作与摩擦，避免纸上谈兵。</div>
+        </section>
+
+        <section class="slide" data-title="怎么把它推进下去">
+            <div class="dh"><span>5 · PM 价值</span><span class="sn"></span></div>
+            <div class="bar"></div>
+            <h2>最后：建设路径可切成回合，避免永远摊在大蓝图上</h2>
+            <div class="rounds mt-m asl">
+                <div class="rnd r1">
+                    <div class="rnum">1</div><span class="rlbl">第一回合 · 底盘</span>
+                    <h3>先把世界和语义骨架立住</h3>
+                    <div class="rdesc">世界状态、生命周期、动作层、taxonomy。先让系统知道自己现在在哪。</div>
+                    <div class="rpass"><b>主战场</b>：待履约主链路 · <b>过关</b>：复盘 case 时先说阶段与大方向，而不是一上来争「这是哪个意图」</div>
+                </div>
+                <div class="rnd r2">
+                    <div class="rnum">2</div><span class="rlbl">第二回合 · 收窄</span>
+                    <h3>再把收窄和刹车补上</h3>
+                    <div class="rdesc">Query 归一、对象层、risk gate。高风险与高不确定性先控住。</div>
+                    <div class="rpass"><b>主战场</b>：临近履约高风险 · <b>过关</b>：手输订单号频率下降；高风险误自动化下降；能分清是哪层的问题</div>
+                </div>
+                <div class="rnd r3">
+                    <div class="rnum">3</div><span class="rlbl">第三回合 · 能力</span>
+                    <h3>最后再重构 skill，做学习闭环</h3>
+                    <div class="rdesc">skill / tool / policy / eval 协同，OOS 驱动系统长出新能力。</div>
+                    <div class="rpass"><b>主战场</b>：售后高频闭环 · <b>过关</b>：新问题有入口；Skill 失败能区分执行问题 vs 前置理解问题</div>
+                </div>
+            </div>
+            <div class="insight mt-m">
+                <p>进入下一回合的前提：当前回合最核心的错误，已从「结构性错误」降级成「局部边界问题」——不是模块上线了就能推进。</p>
+            </div>
+            <div class="notes">这一页是整场的落地收束。讲顺序比讲模块更重要。</div>
+        </section>
+
+        <section class="slide" data-title="总结与Q&A">
+            <div class="dh"><span>总结 · Q&A</span><span class="sn"></span></div>
+            <div class="banner" style="margin-bottom:16px">
+                <p>今天希望与大家共勉的三点，无关某一则模型选型或某一页架构图：<br/>① <strong>语义对了，业务动作仍可能是错的</strong>——AI 客服最后是判断系统；<br/>② <strong>分层控制</strong>，每层解决一种不确定性，出事知道是哪层的锅；<br/>③ AI PM 最值钱的是<strong>定义边界</strong>：语义坐标系、自动化边界、Skill 契约与评估口径。</p>
+            </div>
+            <div class="g4 mt-m asl" style="gap:9px">
+                <div class="cs card" style="text-align:center">
+                    <div style="font-size:1.1rem;margin-bottom:4px">📍</div>
+                    <div style="font-size:.76rem;font-weight:700;margin-bottom:3px">业务控制层</div>
+                    <p style="font-size:.7rem">控阶段 · 控动作 · 控对象 · 控风险 · 知何时退出</p>
+                </div>
+                <div class="cs card" style="text-align:center">
+                    <div style="font-size:1.1rem;margin-bottom:4px">🧩</div>
+                    <div style="font-size:.76rem;font-weight:700;margin-bottom:3px">五块拼图</div>
+                    <p style="font-size:.7rem">五种性质分开，不混在一张标签表里</p>
+                </div>
+                <div class="cs card" style="text-align:center">
+                    <div style="font-size:1.1rem;margin-bottom:4px">⚙️</div>
+                    <div style="font-size:.76rem;font-weight:700;margin-bottom:3px">四层分工</div>
+                    <p style="font-size:.7rem">状态 · 语义 · 控制 · 执行与学习</p>
+                </div>
+                <div class="cs card" style="text-align:center">
+                    <div style="font-size:1.1rem;margin-bottom:4px">🛠</div>
+                    <div style="font-size:.76rem;font-weight:700;margin-bottom:3px">skills</div>
+                    <p style="font-size:.7rem">旧系统装不下复杂度时的自然结果，不是追新</p>
+                </div>
+            </div>
+            <div class="row mt-l" style="align-items:center;gap:20px">
+                <div style="font-size:clamp(3rem,6vw,5rem);font-weight:900;color:var(--border-s);line-height:1;letter-spacing:-.04em">Q&A</div>
+                <div>
+                    <h2 style="font-size:clamp(1rem,1.8vw,1.5rem);margin:0">讨论</h2>
+                    <p class="lead mt-s" style="font-size:.86rem">回到各自业务里不妨对照：是否已有独立的风险门控？状态是否先于语义？「其他意图」如何进化为新能力？当前最薄的是哪一层？</p>
+                    <p class="sm mt-s" style="color:var(--t3)">← → Space 翻页 · S 演讲备注 · O 总览 · F 全屏</p>
+                </div>
+            </div>
+            <div class="notes">收尾少堆框架，多留可带回业务现场的对照问题。</div>
+        </section>
+
+    </div>
+
+    <div class="pb"><span></span></div>
+    <script>
+        (function() {
+            'use strict';
+
+            function r(fn) {
+                if (document.readyState != 'loading') fn();
+                else document.addEventListener('DOMContentLoaded', fn);
+            }
+            r(function() {
+                const deck = document.querySelector('.deck');
+                if (!deck) return;
+                const slides = Array.from(deck.querySelectorAll('.slide'));
+                if (!slides.length) return;
+                let idx = 0;
+                const total = slides.length;
+                const bf = document.querySelector('.pb>span');
+                let nEl = document.querySelector('.no');
+                if (!nEl) {
+                    nEl = document.createElement('div');
+                    nEl.className = 'no';
+                    document.body.appendChild(nEl);
+                }
+                let ov = document.querySelector('.ov');
+                if (!ov) {
+                    ov = document.createElement('div');
+                    ov.className = 'ov';
+                    slides.forEach(function(s, i) {
+                        const t = document.createElement('div');
+                        t.className = 'th';
+                        const title = s.getAttribute('data-title') || (s.querySelector('h1,h2') || {}).textContent || 'Slide ' + (i + 1);
+                        t.innerHTML = '<div class="n">' + (i + 1) + '</div><div class="t">' + title.trim().slice(0, 50) + '</div>';
+                        t.addEventListener('click', function() {
+                            go(i);
+                            tOv(false);
+                        });
+                        ov.appendChild(t);
+                    });
+                    document.body.appendChild(ov);
+                }
+
+                function go(n) {
+                    n = Math.max(0, Math.min(total - 1, n));
+                    slides.forEach(function(s, i) {
+                        s.classList.toggle('is-active', i === n);
+                        s.classList.toggle('is-prev', i < n);
+                    });
+                    idx = n;
+                    if (bf) bf.style.width = ((n + 1) / total * 100) + '%';
+                    document.querySelectorAll('.sn').forEach(function(el) {
+                        el.setAttribute('data-current', n + 1);
+                        el.setAttribute('data-total', total);
+                    });
+                    const note = slides[n].querySelector('.notes');
+                    nEl.innerHTML = note ? note.innerHTML : '';
+                    if (location.hash !== '#/' + (n + 1)) history.replaceState(null, '', '#/' + (n + 1));
+                    slides[n].querySelectorAll('[data-anim]').forEach(function(el) {
+                        const a = el.getAttribute('data-anim');
+                        el.classList.remove(a);
+                        void el.offsetWidth;
+                        el.classList.add(a);
+                    });
+                    slides[n].querySelectorAll('.asl>*').forEach(function(el) {
+                        el.style.animation = 'none';
+                        void el.offsetWidth;
+                        el.style.animation = '';
+                    });
+                }
+
+                function tN(f) {
+                    nEl.classList.toggle('open', f !== undefined ? f : !nEl.classList.contains('open'));
+                }
+
+                function tOv(f) {
+                    ov.classList.toggle('open', f !== undefined ? f : !ov.classList.contains('open'));
+                }
+
+                function fs() {
+                    const e = document.documentElement;
+                    if (!document.fullscreenElement) e.requestFullscreen && e.requestFullscreen();
+                    else document.exitFullscreen && document.exitFullscreen();
+                }
+                document.addEventListener('keydown', function(e) {
+                    if (e.metaKey || e.ctrlKey || e.altKey) return;
+                    switch (e.key) {
+                        case 'ArrowRight':
+                        case ' ':
+                        case 'PageDown':
+                        case 'Enter':
+                            go(idx + 1);
+                            e.preventDefault();
+                            break;
+                        case 'ArrowLeft':
+                        case 'PageUp':
+                        case 'Backspace':
+                            go(idx - 1);
+                            e.preventDefault();
+                            break;
+                        case 'Home':
+                            go(0);
+                            break;
+                        case 'End':
+                            go(total - 1);
+                            break;
+                        case 'f':
+                        case 'F':
+                            fs();
+                            break;
+                        case 's':
+                        case 'S':
+                            tN();
+                            break;
+                        case 'o':
+                        case 'O':
+                            tOv();
+                            break;
+                        case 'Escape':
+                            tOv(false);
+                            tN(false);
+                            break;
+                    }
+                });
+
+                function fromHash() {
+                    const m = /^#\/(\d+)/.exec(location.hash || '');
+                    if (m) go(Math.max(0, parseInt(m[1], 10) - 1));
+                }
+                window.addEventListener('hashchange', fromHash);
+                fromHash();
+                go(idx);
+            });
+        })();
+    </script>
+</body>
+
+</html>
