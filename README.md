@@ -2,6 +2,9 @@
 
 本地幻灯与 GitHub Pages 部署说明。
 
+**本仓库远端：** [github.com/Xaxrich/pm-share](https://github.com/Xaxrich/pm-share)  
+**开启 Pages 后（`/docs`）访问：** [https://xaxrich.github.io/pm-share/](https://xaxrich.github.io/pm-share/)（需在仓库 Settings → Pages 中启用，约 1～2 分钟生效）
+
 ## 外网访问（GitHub Pages · `/docs`）
 
 本仓库将可发布的静态页放在 **`docs/`** 目录：`docs/index.html` 由 `share_框架增强版.html` 同步而来，作为站点首页。
