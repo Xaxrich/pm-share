@@ -12,6 +12,7 @@
     <style>
          :root {
             --slide-max: min(1400px, 96vw);
+            --toc-h: 52px;
             --bg: #161616;
             --bg2: #0c0c0c;
             --bg3: #1c1917;
@@ -120,10 +121,12 @@
             width: 100%;
             max-width: var(--slide-max);
             margin: 0 auto;
-            padding: 40px 36px 48px;
+            padding: 48px 36px 56px;
             border-bottom: 1px solid var(--border);
             background: var(--bg);
-            min-height: 0
+            min-height: calc(100vh - var(--toc-h));
+            min-height: calc(100svh - var(--toc-h));
+            box-sizing: border-box
         }
         
         .slide.alt {
@@ -132,7 +135,8 @@
         
         .cover {
             max-width: 100%;
-            min-height: 82vh;
+            min-height: calc(100vh - var(--toc-h));
+            min-height: calc(100svh - var(--toc-h));
             padding: 48px 36px 56px;
             display: flex;
             flex-direction: column;
